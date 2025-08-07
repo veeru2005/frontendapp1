@@ -24,6 +24,7 @@ pipeline {
             steps {
                 dir("${env.FRONTEND_DIR}") {
                     sh '''
+                        export PATH=$PATH:/usr/local/bin
                         echo "✅ Using Node: $(node -v)"
                         echo "✅ Using NPM: $(npm -v)"
                         npm install
