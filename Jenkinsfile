@@ -1,12 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        jdk 'JDK_HOME'                    // Make sure this name matches in Jenkins
-        maven 'MAVEN_HOME'                // Make sure this name matches in Jenkins
-        nodejs 'NodeJS 24.5.0'            // Must be added in Global Tool Configuration
-    }
-
     environment {
         BACKEND_DIR = 'crud_backend/crud_backend-main'
         FRONTEND_DIR = 'crud_frontend/crud_frontend-main'
@@ -30,8 +24,8 @@ pipeline {
             steps {
                 dir("${env.FRONTEND_DIR}") {
                     sh '''
-                        node -v
-                        npm -v
+                        echo "✅ Using Node: $(node -v)"
+                        echo "✅ Using NPM: $(npm -v)"
                         npm install
                         npm run build
                     '''
