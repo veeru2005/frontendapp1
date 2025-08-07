@@ -11,8 +11,7 @@ pipeline {
 
         BACKEND_WAR = "${env.BACKEND_DIR}/springapp1.war"
         FRONTEND_WAR = "${env.FRONTEND_DIR}/frontapp1.war"
-
-        NODE_HOME = '/usr/bin:/usr/local/bin' // Common node paths
+        
     }
 
     stages {
@@ -27,12 +26,6 @@ pipeline {
                 dir("${env.FRONTEND_DIR}") {
                     sh '''
                         export PATH=$NODE_HOME:$PATH
-                        if ! command -v node >/dev/null 2>&1; then
-                          echo "❌ Node.js not found. Install it using curl -fsSL https://rpm.nodesource.com/setup_24.x | sudo bash -"
-                          exit 1
-                        fi
-                        echo "✅ Using Node: $(node -v)"
-                        echo "✅ Using NPM: $(npm -v)"
                         npm install
                         npm run build
                     '''
