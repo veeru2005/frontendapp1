@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     tools {
-        jdk 'JDK_HOME'
-        maven 'MAVEN_HOME'
-        nodejs 'NodeJS 24.5.0'
+        jdk 'JDK_HOME'                    // Make sure this name matches in Jenkins
+        maven 'MAVEN_HOME'                // Make sure this name matches in Jenkins
+        nodejs 'NodeJS 24.5.0'            // Must be added in Global Tool Configuration
     }
 
     environment {
@@ -30,6 +30,8 @@ pipeline {
             steps {
                 dir("${env.FRONTEND_DIR}") {
                     sh '''
+                        node -v
+                        npm -v
                         npm install
                         npm run build
                     '''
@@ -57,8 +59,10 @@ pipeline {
         stage('Build Spring Boot App') {
             steps {
                 dir("${env.BACKEND_DIR}") {
-                    sh 'mvn clean package'
-                    sh 'mv target/*.war springapp1.war'
+                    sh '''
+                        mvn clean package
+                        mv target/*.war springapp1.war
+                    '''
                 }
             }
         }
