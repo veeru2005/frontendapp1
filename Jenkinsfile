@@ -36,10 +36,10 @@ pipeline {
         stage('Package React as WAR') {
             steps {
                 script {
-                    def warDir = "${env.FRONTEND_DIR}/war_content"
+                   def warDir = "${env.FRONTEND_DIR}/war_content"
                     sh "rm -rf ${warDir}"
                     sh "mkdir -p ${warDir}/META-INF ${warDir}/WEB-INF"
-                    sh "cp -r ${env.FRONTEND_DIR}/build/* ${warDir}/"
+                    sh "cp -r ${env.FRONTEND_DIR}/dist/* ${warDir}/"
                     writeFile file: "${warDir}/WEB-INF/web.xml", text: '''
                         <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee" version="3.1">
                             <display-name>ReactApp</display-name>
