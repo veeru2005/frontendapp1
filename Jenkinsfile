@@ -4,10 +4,10 @@ pipeline {
     tools {
         jdk 'JDK_HOME'
         maven 'MAVEN_HOME'
+        nodejs 'NodeJS 24.5.0'
     }
 
     environment {
-
         BACKEND_DIR = 'crud_backend/crud_backend-main'
         FRONTEND_DIR = 'crud_frontend/crud_frontend-main'
 
@@ -15,8 +15,8 @@ pipeline {
         TOMCAT_USER = 'admin'
         TOMCAT_PASS = 'admin'
 
-        BACKEND_WAR = 'springapp1.war'
-        FRONTEND_WAR = 'frontapp1.war'
+        BACKEND_WAR = "${env.BACKEND_DIR}/springapp1.war"
+        FRONTEND_WAR = "${env.FRONTEND_DIR}/frontapp1.war"
     }
 
     stages {
@@ -43,7 +43,7 @@ pipeline {
                     def warDir = "${env.FRONTEND_DIR}/war_content"
                     sh "rm -rf ${warDir}"
                     sh "mkdir -p ${warDir}/META-INF ${warDir}/WEB-INF"
-                    sh "cp -r ${env.FRONTEND_DIR}/dist/* ${warDir}/"
+                    sh "cp -r ${env.FRONTEND_DIR}/build/* ${warDir}/"
                     writeFile file: "${warDir}/WEB-INF/web.xml", text: '''
                         <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee" version="3.1">
                             <display-name>ReactApp</display-name>
@@ -65,16 +65,17 @@ pipeline {
 
         stage('Deploy Spring Boot WAR') {
             steps {
-                sh "curl -u ${env.TOMCAT_USER}:${env.TOMCAT_PASS} --upload-file \"${env.BACKEND_WAR}\" \"${env.TOMCAT_URL}/deploy?path=/springapp1&update=true\""
+                sh "curl -u ${TOMCAT_USER}:${TOMCAT_PASS} --upload-file \"${BACKEND_WAR}\" \"${TOMCAT_URL}/deploy?path=/springapp1&update=true\""
             }
         }
 
         stage('Deploy Frontend WAR') {
             steps {
-                sh "curl -u ${env.TOMCAT_USER}:${env.TOMCAT_PASS} --upload-file \"${env.FRONTEND_WAR}\" \"${env.TOMCAT_URL}/deploy?path=/frontapp1&update=true\""
+                sh "curl -u ${TOMCAT_USER}:${TOMCAT_PASS} --upload-file \"${FRONTEND_WAR}\" \"${TOMCAT_URL}/deploy?path=/frontapp1&update=true\""
             }
         }
     }
+
     post {
         success {
             echo "✅ Backend deployed: http://35.179.160.11:9090/springapp1"
